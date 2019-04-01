@@ -32,4 +32,4 @@ nbdist/
 .svn/
 .*.md.html
 dependency-reduced-pom.xml
-*.code-workspace
+/*.code-workspace
