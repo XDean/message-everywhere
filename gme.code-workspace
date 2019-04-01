@@ -1,17 +1,13 @@
 {
 	"folders": [
 		{
-			"path": "chrome"
-		},
-		{
-			"path": "server"
-		}
+			"path": "."
 	],
 	"settings": {
 		"json.schemas": [
 			{
 				"fileMatch": [
-					"**/manifest.json"
+					"/chrome/manifest.json"
 				],
 				"url": "http://json.schemastore.org/chrome-manifest"
 			}
