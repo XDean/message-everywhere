@@ -20,6 +20,11 @@ public class MessageEndpoint {
   @Inject
   MessageService service;
 
+  @GetMapping("/hello")
+  public String hello() {
+    return "Hello";
+  }
+  
   @PostMapping("/send")
   public void send(@RequestBody Message msg) {
     service.push(msg);
@@ -30,7 +35,7 @@ public class MessageEndpoint {
     return service.fetch().skip(offset).limit(limit).toList().blockingGet();
   }
 
-  @GetMapping
+  @GetMapping("/observe")
   public Observable<ServerSentEvent<Message>> observe() {
     return service.observe()
         .map(msg -> ServerSentEvent.builder(msg).build());
