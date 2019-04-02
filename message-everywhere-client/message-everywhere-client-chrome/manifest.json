@@ -1,10 +1,21 @@
 {
     "manifest_version": 2,
     "version": "1.0",
-    "name": "My First Chrome",
+    "name": "Message Everywhere",
+    "icons": {
+        "16": "img/icon.png",
+        "48": "img/icon.png",
+        "128": "img/icon.png"
+    },
     "browser_action": {
-        "default_icon": "",
-        "default_popup": "",
-        "default_title": ""
-    }
+        "default_icon": "img/icon.png",
+        "default_title": "Message Everywhere",
+        "default_popup": "page/popup.html"
+    },
+    "background": {},
+    "permissions": [
+        "notifications",
+        "webRequest"
+    ],
+	"homepage_url": "https://github.com/XDean"
 }

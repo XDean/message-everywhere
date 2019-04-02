@@ -33,3 +33,4 @@ nbdist/
 .*.md.html
 dependency-reduced-pom.xml
 /*.code-workspace
+message-everywhere-client/message-everywhere-client-flutter/**
