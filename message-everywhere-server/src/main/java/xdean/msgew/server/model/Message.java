@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Value;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = Message.MessageBuilder.class)
 public class Message {
   Messager from;

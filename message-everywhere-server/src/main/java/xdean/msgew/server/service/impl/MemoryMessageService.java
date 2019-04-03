@@ -14,13 +14,15 @@ import xdean.msgew.server.service.MessageService;
 
 @Service
 public class MemoryMessageService implements MessageService {
+  int id = 0;
   Subject<Message> messageSubject = PublishSubject.create();
   Deque<Message> messages = new ConcurrentLinkedDeque<>();
 
   @Override
   public void push(Message msg) {
-    messages.addLast(msg);
-    messageSubject.onNext(msg);
+    Message actual = msg.toBuilder().id(id++).build();
+    messages.addLast(actual);
+    messageSubject.onNext(actual);
   }
 
   @Override
