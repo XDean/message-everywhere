@@ -12,12 +12,16 @@
         "default_title": "Message Everywhere",
         "default_popup": "page/popup.html"
     },
-    "background": {},
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ]
+    },
     "permissions": [
         "activeTab",
         "notifications",
         "webRequest",
         "http://127.0.0.1:8080/*"
     ],
-	"homepage_url": "https://github.com/XDean"
+    "homepage_url": "https://github.com/XDean"
 }
