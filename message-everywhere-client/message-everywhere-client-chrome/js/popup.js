@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkbox = document.getElementById('autoFetch');
     checkbox.onclick = event => chrome.runtime.sendMessage({
         type: 'autoFetch',
-        value: event.srcElement.checked
+        data: event.srcElement.checked
     })
     chrome.runtime.sendMessage({
         type: 'isAutoFetch'
@@ -19,9 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     switch (request.type) {
+        case 'autoFetch':
+            document.getElementById('autoFetch').checked = request.data
+            break
         case 'newMessage':
             onNewMessage(request.data)
-            break;
+            break
     }
 })
 
