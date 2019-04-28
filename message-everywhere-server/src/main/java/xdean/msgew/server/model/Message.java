@@ -14,7 +14,6 @@ import lombok.Value;
 public class Message {
   Messager from;
   Messager to;
-  int id;
   long timestamp;
   String content;
   Map<String, String> extra;
