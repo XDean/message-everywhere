@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 
 void main() => runApp(new MyApp());
 
@@ -18,11 +17,45 @@ class Settings extends StatefulWidget {
 }
 
 class SettingsState extends State<Settings> {
+  bool _value = false;
+
   @override
-  Widget build(BuildContext context) => new Scaffold(
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    return new Scaffold(
         appBar: AppBar(
-          title: Text('Startup Name Generator'),
+          title: Text('Message Everywhere'),
         ),
-        body: Text("text"),
-      );
+        body: Container(
+            padding: new EdgeInsets.all(25.0),
+            child: Form(
+              child: ListView(
+                children: [
+                  TextFormField(
+                      keyboardType: TextInputType.url,
+                      decoration: InputDecoration(
+                          labelText: "Server URL",
+                          hintText: "http://xxx:xxx/xxx")),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        labelText: "Passphrase (Optional)",
+                        helperText:
+                            "Passphrase is to protect your message\nIt never submit to server"),
+                  ),
+                  Container(
+                      child: new Switch(
+                          value: _value,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _value = newValue;
+                            });
+                          },
+                          inactiveThumbColor: Colors.grey,
+                          inactiveTrackColor: Colors.grey,
+                          activeColor: Colors.blue)),
+                ],
+              ),
+            )));
+  }
 }
