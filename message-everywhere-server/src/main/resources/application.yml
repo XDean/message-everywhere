@@ -2,3 +2,15 @@ server:
   port: 8080
   servlet:
     context-path: /message-everywhere
+spring:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: message-everywhere
+      key-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring.json.trusted.packages: "*"
