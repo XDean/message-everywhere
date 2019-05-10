@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="xdean.msgew.client.msgew">
+    package="xdean.msgew.client.android">
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -31,10 +33,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".MessageFetchService">
-            <intent-filter>
-                <action android:name="MessageEveryWhere-Fetch" />
-            </intent-filter>
-        </service>
     </application>
 </manifest>

@@ -73,25 +73,30 @@ class SettingsState extends State<Settings> {
   }
 
   void run() async {
-    if (_run && _port == null) {
-      print('To run message fetch');
-      var receivePort = ReceivePort();
-      receivePort.listen((msg) {
-        _port = msg as SendPort;
-        if (_run == false) {
-          _port.send(true);
-        }
-      });
+    if (_run) {
+      platform.invokeMethod("run", {"url": _url, "encode": _encode});
+    } else {
+      platform.invokeMethod("stop");
+    }
+//    if (_run && _port == null) {
+//      print('To run message fetch');
+//      var receivePort = ReceivePort();
+//      receivePort.listen((msg) {
+//        _port = msg as SendPort;
+//        if (_run == false) {
+//          _port.send(true);
+//        }
+//      });
 //      AndroidAlarmManager.oneShot(Duration(milliseconds: 500), 99,
 //              () => runFetchMsg(_url, _encode, receivePort.sendPort))
 //          .catchError((e) => {print(e)})
 //          .then((bool) {
 //        print('run $bool');
 //      });
-    } else if (_port != null) {
-      print('To stop message fetch');
-      _port.send(true);
-    }
+//    } else if (_port != null) {
+//      print('To stop message fetch');
+//      _port.send(true);
+//    }
   }
 }
 
