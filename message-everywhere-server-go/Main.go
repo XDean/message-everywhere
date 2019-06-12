@@ -35,6 +35,7 @@ func main() {
 				return false
 			}
 		})
+		c.Header("X-Accel-Buffering", "no")
 		if c.Stream(func(w io.Writer) bool {
 			if msg, ok := <-chanStream; ok {
 				c.SSEvent("message", msg)
@@ -45,5 +46,5 @@ func main() {
 			closeChan <- true
 		}
 	})
-	router.Run() // listen and serve on 0.0.0.0:8080
+	router.Run(":11070") // listen and serve on 0.0.0.0:8080
 }
