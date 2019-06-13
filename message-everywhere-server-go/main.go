@@ -15,8 +15,6 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(xecho.BreakErrorRecover())
 
-	e.Static("/", "static")
-
 	e.GET("/hello", func(context echo.Context) error {
 		return context.JSON(http.StatusOK, "hello "+context.Request().RemoteAddr)
 	})

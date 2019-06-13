@@ -9,7 +9,11 @@ import (
 	"net/http"
 )
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 func SendMessage(c echo.Context) error {
 	var msg model.Message
