@@ -1,4 +1,4 @@
-const serverURL = 'http://127.0.0.1:8080/message-everywhere/'
+const serverURL = 'http://47.111.12.217/'
 
 var options = {
     autoFetch: true
