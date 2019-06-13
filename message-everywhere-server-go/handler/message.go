@@ -7,6 +7,7 @@ import (
 	"github.com/xdean/message-everywhere/model"
 	"github.com/xdean/message-everywhere/service"
 	"net/http"
+	"strings"
 )
 
 var upgrader = websocket.Upgrader{
@@ -20,6 +21,14 @@ func SendMessage(c echo.Context) error {
 	xecho.MustBind(c, &msg)
 	service.Repo.MessageService.Send(msg)
 	return c.JSON(http.StatusOK, xecho.M("Send success"))
+}
+
+func GetOrObserveMessage(c echo.Context) error {
+	if strings.Contains(strings.ToLower(c.Request().Header.Get(echo.HeaderUpgrade)), "websocket") {
+		return ObserveMessage(c)
+	} else {
+		return GetMessage(c)
+	}
 }
 
 func GetMessage(c echo.Context) error {
@@ -52,7 +61,6 @@ func GetMessage(c echo.Context) error {
 }
 
 func ObserveMessage(c echo.Context) error {
-
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	xecho.MustNoError(err)
 	defer ws.Close()

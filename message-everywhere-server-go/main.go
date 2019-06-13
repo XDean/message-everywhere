@@ -24,8 +24,7 @@ func main() {
 
 	apiGroup := e.Group("/api")
 	apiGroup.POST("/message", handler.SendMessage)
-	apiGroup.GET("/message", handler.GetMessage)
-	apiGroup.GET("/message/observe", handler.ObserveMessage)
+	apiGroup.GET("/message", handler.GetOrObserveMessage)
 
 	e.Logger.Fatal(e.Start(":11070"))
 }

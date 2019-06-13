@@ -52,6 +52,10 @@ func NewInMemMessageService() *InMemMessageService {
 					}(listener, cmd.message)
 				}
 			case Fetch:
+				if cmd.offset > len(s.messages) {
+					close(cmd.listener.Message)
+					return
+				}
 				go func(ml MessageListener, msgs []model.Message) {
 					for _, msg := range msgs {
 						select {
