@@ -1,4 +1,8 @@
 package service
 
 // MessageService instance
-var MessageService IMessageService = NewInMemMessageService()
+var Repo = struct {
+	MessageService IMessageService
+}{
+	MessageService: NewInMemMessageService(),
+}

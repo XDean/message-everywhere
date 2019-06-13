@@ -18,12 +18,37 @@ var upgrader = websocket.Upgrader{
 func SendMessage(c echo.Context) error {
 	var msg model.Message
 	xecho.MustBind(c, &msg)
-	service.MessageService.Send(msg)
+	service.Repo.MessageService.Send(msg)
 	return c.JSON(http.StatusOK, xecho.M("Send success"))
 }
 
 func GetMessage(c echo.Context) error {
-	return nil
+	type Param struct {
+		Limit  int `json:"limit" form:"limit" query:"limit"`
+		Offset int `json:"offset" form:"offset" query:"offset"`
+	}
+	param := new(Param)
+	xecho.MustBindAndValidate(c, param)
+
+	done := make(chan interface{})
+	messageStream := make(chan model.Message, 10)
+	service.Repo.MessageService.Fetch(service.MessageListener{
+		Done:    done,
+		Message: messageStream,
+	}, param.Offset)
+
+	messages := make([]model.Message, 0)
+
+	for i := 0; i < param.Limit; i++ {
+		if msg, ok := <-messageStream; ok {
+			messages = append(messages, msg)
+		} else {
+			break
+		}
+	}
+	close(done)
+
+	return c.JSON(http.StatusOK, messages)
 }
 
 func ObserveMessage(c echo.Context) error {
@@ -32,20 +57,16 @@ func ObserveMessage(c echo.Context) error {
 	xecho.MustNoError(err)
 	defer ws.Close()
 
-	done := make(chan bool)
+	done := make(chan interface{})
 	messageStream := make(chan model.Message, 10)
-	service.MessageService.Observe(func(msg model.Message) bool {
-		select {
-		case messageStream <- msg:
-			return true
-		case <-done:
-			close(messageStream)
-			return false
-		}
+
+	service.Repo.MessageService.Observe(service.MessageListener{
+		Done:    done,
+		Message: messageStream,
 	})
 
 	ws.SetCloseHandler(func(code int, text string) error {
-		done <- true
+		close(done)
 		return nil
 	})
 

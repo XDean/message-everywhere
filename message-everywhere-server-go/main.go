@@ -11,6 +11,9 @@ import (
 
 func main() {
 	e := echo.New()
+
+	e.Validator = xecho.NewValidator()
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(xecho.BreakErrorRecover())

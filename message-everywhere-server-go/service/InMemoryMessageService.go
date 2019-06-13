@@ -1,6 +1,8 @@
 package service
 
-import "github.com/xdean/message-everywhere/model"
+import (
+	"github.com/xdean/message-everywhere/model"
+)
 
 // InMemMessageService is a in memory implementation of IMessageService
 type InMemMessageService struct {
@@ -17,11 +19,13 @@ type Send struct {
 // Fetch message
 type Fetch struct {
 	listener MessageListener
+	offset   int
 }
 
 // Observe message
 type Observe struct {
 	listener MessageListener
+	add      bool
 }
 
 // NewInMemMessageService create a new message service
@@ -37,22 +41,40 @@ func NewInMemMessageService() *InMemMessageService {
 			switch cmd := c.(type) {
 			case Send:
 				s.messages = append(s.messages, cmd.message)
-				listeners := make([]MessageListener, 0)
-				for _, l := range s.listeners {
-					if l(cmd.message) {
-						listeners = append(listeners, l)
-					}
+				for _, listener := range s.listeners {
+					go func(ml MessageListener, msg model.Message) {
+						select {
+						case <-ml.Done:
+							close(ml.Message)
+							s.commandChan <- Observe{listener: ml, add: false}
+						case ml.Message <- msg:
+						}
+					}(listener, cmd.message)
 				}
-				s.listeners = listeners
 			case Fetch:
-				msgs := s.messages
-				for _, msg := range msgs {
-					if !cmd.listener(msg) {
-						break
+				go func(ml MessageListener, msgs []model.Message) {
+					for _, msg := range msgs {
+						select {
+						case <-ml.Done:
+							return
+						case ml.Message <- msg:
+						}
 					}
-				}
+					close(ml.Message)
+				}(cmd.listener, s.messages[cmd.offset:])
 			case Observe:
-				s.listeners = append(s.listeners, cmd.listener)
+				if cmd.add {
+					s.listeners = append(s.listeners, cmd.listener)
+				} else {
+					var index int
+					for i, l := range s.listeners {
+						if l == cmd.listener {
+							index = i
+							break
+						}
+					}
+					s.listeners = append(s.listeners[:index], s.listeners[index:]...)
+				}
 			}
 		}
 	}()
@@ -65,11 +87,11 @@ func (s *InMemMessageService) Send(msg model.Message) {
 }
 
 // Fetch message
-func (s *InMemMessageService) Fetch(l MessageListener) {
-	s.commandChan <- Fetch{l}
+func (s *InMemMessageService) Fetch(l MessageListener, offset int) {
+	s.commandChan <- Fetch{listener: l, offset: offset}
 }
 
 // Observe message
 func (s *InMemMessageService) Observe(l MessageListener) {
-	s.commandChan <- Observe{l}
+	s.commandChan <- Observe{listener: l, add: true}
 }
