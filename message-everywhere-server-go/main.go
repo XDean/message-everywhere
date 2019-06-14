@@ -24,7 +24,10 @@ func main() {
 
 	apiGroup := e.Group("/api")
 	apiGroup.POST("/message", handler.SendMessage)
-	apiGroup.GET("/message", handler.GetOrObserveMessage)
+	apiGroup.GET("/message", handler.GetMessage)
+
+	wsGroup := e.Group("/websocket")
+	wsGroup.GET("/message", handler.ObserveMessage)
 
 	e.Logger.Fatal(e.Start(":11070"))
 }
